@@ -2,7 +2,7 @@ from collections import OrderedDict
 from inspect import stack
 from os.path import abspath, dirname, join, pardir
 from pyproj import Proj
-from PyQt5.QtCore import (
+from PySide2.QtCore import (
     QByteArray,
     QDataStream,
     QIODevice,
@@ -12,7 +12,7 @@ from PyQt5.QtCore import (
     QSize,
     Qt
 )
-from PyQt5.QtGui import (
+from PySide2.QtGui import (
     QBrush,
     QCursor,
     QColor,
@@ -23,7 +23,7 @@ from PyQt5.QtGui import (
     QPixmap,
     QPolygonF
 )
-from PyQt5.QtWidgets import (
+from PySide2.QtWidgets import (
     QAction,
     QApplication,
     QComboBox,
@@ -66,10 +66,10 @@ class Controller(QMainWindow):
         super().__init__()
         # self.path_shapefiles = join(path_app, pardir, 'shapefile')
         # self.path_projects = join(path_app, pardir, 'projects')
-        self.path_shapefiles = join(path_app, '../shapefile')
-        self.path_projects = join(path_app, '../projects')
+        self.path_shapefiles = join(path_app, 'shapefile')
+        self.path_projects = join(path_app, 'projects')
         # path_icon = join(path_app, pardir, 'images')
-        path_icon = join(path_app, '../images')
+        path_icon = join(path_app, 'images')
         self.setWindowIcon(QIcon(join(path_icon, 'globe.png')))
 
         central_widget = QWidget(self)
@@ -238,6 +238,7 @@ class View(QGraphicsView):
             )))
 
     def draw_polygons(self):
+        polygon_items = []
         sf = shapefile.Reader(self.shapefile)
         polygons = sf.shapes()
         for polygon in polygons:
@@ -259,7 +260,9 @@ class View(QGraphicsView):
                 polygon_item.setBrush(self.land_brush)
                 polygon_item.setPen(self.land_pen)
                 polygon_item.setZValue(1)
-                yield polygon_item
+                # yield polygon_item
+                polygon_items.append(polygon_item)
+        return polygon_items
 
     def draw_water(self):
         if self.proj in ('Spherical', 'ETRS89 - LAEA Europe'):
